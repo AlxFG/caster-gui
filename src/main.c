@@ -10,7 +10,7 @@ int main() {
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	SetConfigFlags(FLAG_WINDOW_UNDECORATED);
-	InitWindow(screenWidth, screenHeight, "raygui - portable window");
+	InitWindow(screenWidth, screenHeight, "caster-gui");
 
 	Vector2 mousePosition = { 0 };
 	Vector2 windowPosition = { 500, 200 };
@@ -34,17 +34,14 @@ int main() {
 
 		mousePosition = GetMousePosition();
 
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !dragWindow)
-		{
-			if (CheckCollisionPointRec(mousePosition, (Rectangle){ 0, 0, screenWidth, 20 }))
-			{
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !dragWindow) {
+			if (CheckCollisionPointRec(mousePosition, (Rectangle){ 0, 0, screenWidth, 20 })) {
 				dragWindow = true;
 				panOffset = mousePosition;
 			}
 		}
 
-		if (dragWindow)
-		{
+		if (dragWindow) {
 			windowPosition.x += (mousePosition.x - panOffset.x);
 			windowPosition.y += (mousePosition.y - panOffset.y);
 
@@ -62,11 +59,13 @@ int main() {
 		DrawText(TextFormat("IP:Port"), 10, 200, 30, DARKGRAY);
 		GuiTextBox(host_bounds, host, 1024, host_state);
 		if (GuiButton((Rectangle) {500, 200, 80, 30}, "Connect/Host")) {
-			system(TextFormat("%s -n %s", caster, host));
+			system(TextFormat("START /B %s -n %s", caster, host));
 			memset(host, '\0', strlen(host));
 		}
 		if (GuiButton((Rectangle) {580, 200, 60, 30}, "Paste")) {
-			system(TextFormat("%s -n %s", caster, GetClipboardText()));
+			strcpy(host, GetClipboardText());
+			system(TextFormat("START /B %s -n %s", caster, host));
+			memset(host, '\0', strlen(host));
 		}
 		if (CheckCollisionPointRec(mousePosition, host_bounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 			host_state = STATE_FOCUSED;
@@ -76,11 +75,13 @@ int main() {
 		DrawText(TextFormat("Spectate"), 10, 300, 30, DARKGRAY);
 		GuiTextBox(spectate_bounds, spectate, 1024, spectate_state);
 		if (GuiButton((Rectangle) {500, 300, 80, 30}, "Connect")) {
-			system(TextFormat("%s -ns %s", caster, spectate));
+			system(TextFormat("START /B %s -ns %s", caster, spectate));
 			memset(spectate, '\0', strlen(spectate));
 		}
 		if (GuiButton((Rectangle) {580, 300, 60, 30}, "Paste")) {
-			system(TextFormat("%s -ns %s", caster, GetClipboardText()));
+			strcpy(spectate, GetClipboardText());
+			system(TextFormat("START /B %s -ns %s", caster, spectate));
+			memset(spectate, '\0', strlen(spectate));
 		}
 		if (CheckCollisionPointRec(mousePosition, spectate_bounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 			spectate_state = STATE_FOCUSED;
@@ -89,7 +90,7 @@ int main() {
 
 		DrawText(TextFormat("Offline"), 10, 400, 30, DARKGRAY);
 		if (GuiButton((Rectangle) {200, 400, 80, 30}, "Training")) {
-			system(TextFormat("%s -not", caster));
+			system(TextFormat("START /B %s -not", caster));
 		}
 
 		if (!CheckCollisionPointRec(mousePosition, host_bounds) &&
